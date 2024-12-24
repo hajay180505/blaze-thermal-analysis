@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PCB Data</title>
+</head>
+<body>
+    <h1>PCB Data</h1>
+    <table border="1">
+        <tr>
+            <th>Image Path</th>
+            <th>Desired Areas</th>
+        </tr>
+        {% for data in pcb_data %}
+        <tr>
+            <td><a href="{{ data.image_path }}">{{ data.image_path }}</a></td>
+            <td>{{ data.desired_areas }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Upload PCB Thermal Image</title>
+</head>
+<body>
+    <h1>Upload PCB Thermal Image</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <label for="pcb_type">PCB Type:</label>
+        <select name="pcb_type" id="pcb_type">
+            {% for type in pcb_types %}
+            <option value="{{ type }}">{{ type }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label for="thermal_image">Thermal Image:</label>
+        <input type="file" name="thermal_image" id="thermal_image" required><br><br>
+
+        <label for="desired_areas">Desired Areas (JSON format):</label><br>
+        <textarea name="desired_areas" required></textarea><br><br>
+
+        <button type="submit">Upload</button>
+    </form>
+</body>
+</html>
