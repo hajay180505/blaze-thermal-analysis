@@ -1,5 +1,0 @@
-python3 -m venv .venv
-source .venv/bin/activate [ source .venv/Scripts/activate in gitbash windows]
-pip install -r requirements.txt
-cd blaze
-uvicorn app.main:app --reload
