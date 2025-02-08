@@ -21,7 +21,7 @@ def draw_bounding_boxes(image_path, detections_dict):
 # Set the path where processed images are stored
 PROCESSED_IMAGE_PATH = "processed_images/output.png"
 
-st.title("Image Analysis App")
+st.title("Blaze")
 
 uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
 

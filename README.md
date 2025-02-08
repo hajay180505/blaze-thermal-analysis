@@ -1,5 +1,5 @@
 
-# Streamlit Image Analysis App
+# Blaze
 
 ## 🛠 Installation
 
