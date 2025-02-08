@@ -6,7 +6,7 @@
 ### 1️⃣ Clone the repository:
 ```sh
 git clone https://github.com/hajay180505/blaze-thermal-analysis.git
-cd blaze-thermal-analysis
+cd blaze-thermal-analysis/Thermal
 ```
 
 ### 2️⃣ Create a virtual environment (optional but recommended)
