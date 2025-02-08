@@ -5,8 +5,8 @@
 
 ### 1️⃣ Clone the repository:
 ```sh
-git clone https://github.com/yourusername/streamlit-image-analysis.git
-cd streamlit-image-analysis
+git clone https://github.com/hajay180505/blaze-thermal-analysis.git
+cd blaze-thermal-analysis
 ```
 
 ### 2️⃣ Create a virtual environment (optional but recommended)
