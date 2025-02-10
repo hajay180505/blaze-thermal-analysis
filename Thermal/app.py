@@ -4,12 +4,20 @@ import os
 from infer import *
 from orient import *
 from thermal import *
+from lifetime import *
 
 ALLOWABLE_THRESHOLDS = [50,50,50,50]
 
 def extract(coords_og):
     
+    thermals = {
+        k : (v[0]+35, v[1], v[2]+35, v[3]) for k,v in coords_og.items()
+    }
+    
+    print(f"{thermals=}")
+    print(f"{coords_og=}")
     coords = [(xmin, ymin, xmax - xmin, ymax - ymin) for xmin, ymin, xmax, ymax in coords_og.values()]
+    therm_coords = [(xmin, ymin, xmax - xmin, ymax - ymin) for xmin, ymin, xmax, ymax in thermals.values()]
     thermal_file = st.file_uploader("Upload corresponding thermal image", type=["png", "jpg", "jpeg"])
     
     if thermal_file:
@@ -20,7 +28,7 @@ def extract(coords_og):
         
         st.subheader("Uploaded image with annotations")
         
-        img = draw_bounding_boxes(f"./uploads/{thermal_file.name}", thermal_coords)
+        img = draw_bounding_boxes(f"./uploads/{thermal_file.name}", thermals)
     
         st.image(img,caption="Thermal images", use_container_width=True)
         
@@ -36,10 +44,12 @@ def extract(coords_og):
             minimum_temperature = st.text_input("Enter your minimum temperature:", min_value=1, max_value=100)
             maximum_temperature = st.text_input("Enter your maximum temperature:", min_value=1, max_value=100)
         
-        temperatures = extract_temperature_from_ironbow("./uploads/"+thermal_file.name, coords, minimum_temperature, maximum_temperature)
+        temperatures = extract_temperature_from_ironbow("./uploads/"+thermal_file.name, therm_coords, maximum_temperature, minimum_temperature)
             
-        for (resistor, temperature) in zip(coords_og, temperatures):
-            st.write(f"{resistor} : Mean = {temperature[0]} peak = {temperature[1]}")    
+        peaks = []
+        for (resistor, temperature) in zip(thermals, temperatures):
+            st.write(f"{resistor} : Mean = {temperature[0]} peak = {temperature[1]}") 
+            peaks.append(temperature[1])   
             if resistor == "R1":
                 if temperature[1]<ALLOWABLE_THRESHOLDS[0]  or (temperature[0]<ALLOWABLE_THRESHOLDS[0]) :
                     st.markdown("<p style='color: red;'>R1 might be open</p>", unsafe_allow_html=True)
@@ -53,7 +63,8 @@ def extract(coords_og):
                 if (temperature[1]<ALLOWABLE_THRESHOLDS[3]) or (temperature[0]<ALLOWABLE_THRESHOLDS[3]):
                     st.markdown("<p style='color: red;'>R4 might be open</p>", unsafe_allow_html=True)
 
-
+        return peaks
+    
 def draw_bounding_boxes(image_path, detections_dict):
     image = cv2.imread(image_path)
     print(f"{detections_dict=}")
@@ -115,14 +126,30 @@ if uploaded_file:
         #ignore
         st.title("Missing resistors") 
         for problem in problems:
-            st.write(problem)    
-        
+            # st.write(problem)
+            st.markdown(f"<p style='color: red;'>{problem}</p>", unsafe_allow_html=True)
         print(f"{quadrant}: {box}")
         
     else:
         st.text("All resistors are available!\nProceeding to extraction of temperature")
         
-        extract(q_new)
+        peaks = extract(q_new)
+        r = 1
         
+        st.title("Estimated lifetimes of resistors")
+        for temperature in peaks:
+        # operating_temperature = st.text_input("Enter operating temperature in Celsius: ")
+            T_use = float(temperature)
+            estimated_life = estimate_resistor_life(T_use)
+            hours_per_year = 365.25 * 24
+            years = estimated_life / hours_per_year
+            st.write(f"Resistor {r} : {years:.2f} years")
+            r+=1
+            
+    # Assuming 1 year = 365.25 days (including leap years)
+            
+
+
+
 
 
