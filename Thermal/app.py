@@ -18,6 +18,12 @@ def extract(coords_og):
         with open(file_path, "wb") as f:
             f.write(thermal_file.getbuffer())
         
+        st.subheader("Uploaded image with annotations")
+        
+        img = draw_bounding_boxes(f"./uploads/{thermal_file.name}", thermal_coords)
+    
+        st.image(img,caption="Thermal images", use_container_width=True)
+        
         rois = [(103,54,27,11), (191,54,27,11)] #130,65
         rois_corner = [(282,6,30,16), (282,201,30,16)] #312,22
         
