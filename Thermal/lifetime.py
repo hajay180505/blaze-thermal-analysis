@@ -20,3 +20,22 @@ def estimate_resistor_life(T_use, L0=100000, T_ref=343, Ea=0.5):
     
     return LT
 
+def compute_power_degradation(T_use, P_rated=1.0, T_threshold=70, T_max=155):
+    """
+    Compute usable power at a given temperature based on the derating curve.
+
+    Parameters:
+    T_use (float): Operating temperature in Celsius
+    P_rated (float): Rated power at threshold temperature (default: 1.0W)
+    T_threshold (float): Temperature where derating starts (default: 70°C)
+    T_max (float): Maximum operating temperature (default: 155°C)
+
+    Returns:
+    float: Usable power at the given temperature
+    """
+    if T_use <= T_threshold:
+        return P_rated
+    elif T_use >= T_max:
+        return 0.0
+    else:
+        return P_rated * ((T_max - T_use) / (T_max - T_threshold))
