@@ -6,12 +6,13 @@ from orient import *
 from thermal import *
 from lifetime import *
 
-ALLOWABLE_THRESHOLDS = [50,50,50,50]
+ALLOWABLE_THRESHOLDS = [40 , 40, 40, 40]
+
 
 def extract(coords_og):
     
     thermals = {
-        k : (v[0]+35, v[1], v[2]+35, v[3]) for k,v in coords_og.items()
+        k : (v[0], v[1], v[2] , v[3] ) for k,v in coords_og.items()
     }
     
     print(f"{thermals=}")
@@ -51,16 +52,16 @@ def extract(coords_og):
             st.write(f"{resistor} : Mean = {temperature[0]} peak = {temperature[1]}") 
             peaks.append(temperature[1])   
             if resistor == "R1":
-                if temperature[1]<ALLOWABLE_THRESHOLDS[0]  or (temperature[0]<ALLOWABLE_THRESHOLDS[0]) :
+                if temperature[1]<ALLOWABLE_THRESHOLDS[0]   :
                     st.markdown("<p style='color: red;'>R1 might be open</p>", unsafe_allow_html=True)
             elif resistor == "R2":
-                if temperature[1]<ALLOWABLE_THRESHOLDS[1]  or (temperature[0]<ALLOWABLE_THRESHOLDS[1]):
+                if temperature[1]<ALLOWABLE_THRESHOLDS[1]  :
                     st.markdown("<p style='color: red;'>R2 might be open</p>", unsafe_allow_html=True)
             elif resistor == "R3":
-                if temperature[1]<ALLOWABLE_THRESHOLDS[2]  or (temperature[0]<ALLOWABLE_THRESHOLDS[2]):
+                if temperature[1]<ALLOWABLE_THRESHOLDS[2]  :
                     st.markdown("<p style='color: red;'>R3 might be open</p>", unsafe_allow_html=True)
             elif resistor == "R4":
-                if (temperature[1]<ALLOWABLE_THRESHOLDS[3]) or (temperature[0]<ALLOWABLE_THRESHOLDS[3]):
+                if (temperature[1]<ALLOWABLE_THRESHOLDS[3]) :
                     st.markdown("<p style='color: red;'>R4 might be open</p>", unsafe_allow_html=True)
 
         return peaks
@@ -80,9 +81,13 @@ def draw_bounding_boxes(image_path, detections_dict):
 
 
 # Set the path where processed images are stored
+st.set_page_config(page_title="Blaze", page_icon="🎀", layout="wide")
 PROCESSED_IMAGE_PATH = "processed_images/output.png"
 
+# st.title("PSG College of Technology")
+st.markdown("<h1 style='text-align: center;'>PSG College of Technology</h1>", unsafe_allow_html=True)
 st.title("Blaze")
+st.markdown("<h6 style='text-align: right;'>By Ajay H, Keerthana S, Harshita V</h6>", unsafe_allow_html=True)
 
 uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
 
@@ -136,7 +141,7 @@ if uploaded_file:
         peaks = extract(q_new)
         r = 1
         
-        st.title("Estimated lifetimes of resistors")
+        st.title("Estimated lifetimes of resistors :")
         for temperature in peaks:
         # operating_temperature = st.text_input("Enter operating temperature in Celsius: ")
             T_use = float(temperature)
@@ -146,6 +151,20 @@ if uploaded_file:
             st.write(f"Resistor {r} : {years:.2f} years")
             r+=1
             
+        
+        r = 1
+        
+        st.title("Estimated power degradations : ")
+        for temperature in peaks:
+        # operating_temperature = st.text_input("Enter operating temperature in Celsius: ")
+            T_use = float(temperature)
+            P_rated = 0.5
+            usable_power = compute_power_degradation(T_use, P_rated)
+            st.write(f"Usable power at {T_use:.2f}°C for Resistor {r} : {usable_power:.2f} W")
+            r+=1       
+                
+        # Example usage:
+                    
     # Assuming 1 year = 365.25 days (including leap years)
             
 
